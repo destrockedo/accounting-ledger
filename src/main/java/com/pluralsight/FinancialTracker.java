@@ -122,12 +122,14 @@ public class FinancialTracker {
         System.out.println("How much would you like to Deposit");
         double price = scanner.nextDouble();
         scanner.nextLine();
+        System.out.println(price + "$ Has Been Depsited to your account!");
 
         if (price > 0) {
             Transaction deposit = new Transaction(date, time, description, vendor, price
             );
             // Makes it so when adding to transaction file it actaully appends it
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+                writer.newLine();
 
                 writer.write(deposit.toString());
 
@@ -160,13 +162,14 @@ public class FinancialTracker {
         System.out.println("How much Will you be paying today?");
         double price = scanner.nextDouble();
         scanner.nextLine();
+        System.out.println(price + "Was payed Today!");
 
         if (price > 0) {
             price = -price;
             Transaction payment = new Transaction(date, time, description, vendor, price
             );
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-
+                writer.newLine();
                 writer.write(payment.toString());
                 writer.newLine();
 
