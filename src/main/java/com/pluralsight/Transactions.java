@@ -62,7 +62,9 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return date + " | " + time + " | " + description
-                + " | " + vendor + " | " + amount;
+        return date + "|" +
+                //Makes sure Seconds is saved along side H and m
+                time.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss")) + "|" +
+                description + "|" + vendor + "|" + amount;
     }
 }

@@ -1,9 +1,6 @@
 package com.pluralsight;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -100,7 +97,7 @@ public class FinancialTracker {
         }
     }
 
-    }
+
 
     /* ------------------------------------------------------------------
        Add new transactions
@@ -113,7 +110,36 @@ public class FinancialTracker {
      * Store the amount as-is (positive) and append to the file.
      */
     private static void addDeposit(Scanner scanner) {
-        // TODO
+        System.out.println("What's todays date (yyyy-MM-dd)");
+        LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+        System.out.println("What time is it? (HH:mm:ss)");
+        LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
+        System.out.println("What is the reason for this transaction?");
+        String description = scanner.nextLine();
+        System.out.println("What is your name?");
+        String vendor = scanner.nextLine();
+        System.out.println("How much would you like to Deposit");
+        double price = scanner.nextDouble();
+        scanner.nextLine();
+
+        if (price > 0) {
+            Transaction deposit = new Transaction(date, time, description, vendor, price
+            );
+            // Makes it so when adding to transaction file it actaully appends it
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+
+                writer.write(deposit.toString());
+
+                //like scan.nextline but for the transaction file to start on new line when adding something
+                writer.newLine();
+
+            } catch (IOException e) {
+                System.out.println("Error saving deposit: " + e.getMessage());
+                return;
+            }
+
+            transactions.add(deposit);
+        }
     }
 
     /**
@@ -122,7 +148,34 @@ public class FinancialTracker {
      * then converted to a negative amount before storing.
      */
     private static void addPayment(Scanner scanner) {
-        // TODO
+        System.out.println("What's todays date (yyyy-MM-dd)");
+        LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+        System.out.println("What time is it? (HH:mm:ss)");
+        LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
+        System.out.println("What is the reason for this transaction?");
+        String description = scanner.nextLine();
+        System.out.println("What is your name?");
+        String vendor = scanner.nextLine();
+        System.out.println("How much Will you be paying today?");
+        double price = scanner.nextDouble();
+        scanner.nextLine();
+
+        if (price > 0) {
+            price = -price;
+            Transaction payment = new Transaction(date, time, description, vendor, price
+            );
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+
+                writer.write(payment.toString());
+                writer.newLine();
+
+            } catch (IOException e) {
+                System.out.println("Error saving Payment: " + e.getMessage());
+                return;
+            }
+
+            transactions.add(payment);
+        }
     }
 
     /* ------------------------------------------------------------------
