@@ -41,7 +41,7 @@ public class FinancialTracker {
        Main menu
        ------------------------------------------------------------------ */
     public static void main(String[] args) {
-        loadTransactions(FILE_NAME);
+        loadTransactions(FILE_NAME, transactions);
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -211,17 +211,17 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
     private static void displayLedger() {
         //rearranges list
-            transactions.sort(
-                    //Compares the Transactions by Date
-                    Comparator.comparing(Transaction::getDate)
-                            //Compares time only when 2 Dates are the same or if the first static method being compare is the same
-                            .thenComparing(Transaction::getTime)
-                            //makes list newest to oldest or "reverses" it
-                            .reversed()
-            );
-            for (int i = 0; i < transactions.size(); i++) {
-                System.out.println(transactions.get(i));
-            }
+        transactions.sort(
+                //Compares the Transactions by Date
+                Comparator.comparing(Transaction::getDate)
+                        //Compares time only when 2 Dates are the same or if the first static method being compare is the same
+                        .thenComparing(Transaction::getTime)
+                        //makes list newest to oldest or "reverses" it
+                        .reversed()
+        );
+        for (int i = 0; i < transactions.size(); i++) {
+            System.out.println(transactions.get(i));
+        }
     }
 
     private static void displayDeposits() {
@@ -296,7 +296,11 @@ public class FinancialTracker {
                     LocalDate end = previousYear.withDayOfYear(previousYear.lengthOfYear());
                     filterTransactionsByDate(start, end);
                 }
-                case "5" -> {/* TODO – prompt for vendor then report */ }
+                case "5" -> {
+                    System.out.println("Name of Vendor: ");
+                    String vendor = scanner.nextLine();
+                    filterTransactionsByVendor(vendor);
+                }
                 case "6" -> customSearch(scanner);
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
@@ -327,7 +331,19 @@ public class FinancialTracker {
 
 
     private static void filterTransactionsByVendor(String vendor) {
-        // TODO – iterate transactions, print those with matching vendor
+        transactions.sort(
+                //Sort by date and time
+                Comparator.comparing(Transaction::getDate)
+                        .thenComparing(Transaction::getTime)
+                        .reversed()
+        );
+        for (int i = 0; i < transactions.size(); i++) {
+            //If entered vendor eqauls vendor currently on transactions list sout said vendors
+            if (vendor.equalsIgnoreCase(transactions.get(i).getVendor())) {
+                System.out.println(transactions.get(i));
+            }
+        }
+
     }
 
     private static void customSearch(Scanner scanner) {
