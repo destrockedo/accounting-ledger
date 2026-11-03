@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /*
@@ -208,11 +209,46 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
-    private static void displayLedger() { /* TODO – print all transactions in column format, newest first */ }
+    private static void displayLedger() {
+        //rearranges list
+            transactions.sort(
+                    //Compares the Transactions by Date
+                    Comparator.comparing(Transaction::getDate)
+                            //Compares time only when 2 Dates are the same or if the first static method being compare is the same
+                            .thenComparing(Transaction::getTime)
+                            //makes list newest to oldest or "reverses" it
+                            .reversed()
+            );
+            for (int i = 0; i < transactions.size(); i++) {
+                System.out.println(transactions.get(i));
+            }
+    }
 
-    private static void displayDeposits() { /* TODO – only amount > 0               */ }
+    private static void displayDeposits() {
+        transactions.sort(
+                Comparator.comparing(Transaction::getDate)
+                        .thenComparing(Transaction::getTime)
+                        .reversed()
+        );
+        for (int i = 0; i < transactions.size(); i++) {
+            if (transactions.get(i).getAmount() > 0) {
+                System.out.println(transactions.get(i));
+            }
+        }
+    }
 
-    private static void displayPayments() { /* TODO – only amount < 0               */ }
+    private static void displayPayments() {
+        transactions.sort(
+                Comparator.comparing(Transaction::getDate)
+                        .thenComparing(Transaction::getTime)
+                        .reversed()
+        );
+        for (int i = 0; i < transactions.size(); i++) {
+            if (transactions.get(i).getAmount() < 0) {
+                System.out.println(transactions.get(i));
+            }
+        }
+    }
 
     /* ------------------------------------------------------------------
        Reports menu
