@@ -126,8 +126,8 @@ public class FinancialTracker {
         double price = scanner.nextDouble();
         showProgress("ADD DEPOSIT", 5);
         scanner.nextLine();
-        System.out.println(price + "$ Has Been Depsited to your account!");
-        showProgress("ADD DEPOSIT", 6);
+
+
 
         if (price > 0) {
             Transaction deposit = new Transaction(date, time, description, vendor, price
@@ -147,6 +147,8 @@ public class FinancialTracker {
             }
 
             transactions.add(deposit);
+            System.out.println(price + "$ Has Been Depsited to your account!");
+            showProgress("ADD DEPOSIT", 6);// Only "Saves" after confirming deposit is a positive amount
         }
     }
 
@@ -172,8 +174,7 @@ public class FinancialTracker {
         double price = scanner.nextDouble();
         showProgress("ADD PAYMENT", 5);
         scanner.nextLine();
-        System.out.println(price + "$ Was payed Today!");
-        showProgress("ADD PAYMENT", 6);
+
 
         if (price > 0) {
             price = -price;
@@ -190,6 +191,8 @@ public class FinancialTracker {
             }
 
             transactions.add(payment);
+            System.out.println(price + "$ Was payed Today!");
+            showProgress("ADD PAYMENT", 6);
         }
     }
 
@@ -351,10 +354,16 @@ public class FinancialTracker {
                         .thenComparing(Transaction::getTime)
                         .reversed()
         );
+        boolean vendorFound = false;
+
         for (int i = 0; i < transactions.size(); i++) {
             //If entered vendor eqauls vendor currently on transactions list sout said vendors
             if (vendor.equalsIgnoreCase(transactions.get(i).getVendor())) {
                 System.out.println(transactions.get(i));
+                vendorFound = true;
+            }
+            if (!vendorFound){
+                System.out.println("No Vendors by that name.");
             }
         }
 
@@ -401,7 +410,7 @@ public class FinancialTracker {
 
         System.out.println("|----------------------------|");
         System.out.printf("| %-26s |%n", title); //Title is either Addpayment or add deposit
-        //-26 Gives a min width so the box line sup
+        //-26 Gives a min width so the box is always same length
 
         for (int i = 0; i < steps.length; i++) {
             if (i < completedSteps) { // Checks whether this step is completed
