@@ -1,4 +1,4 @@
-# Project Title
+# Accounting Ledger
 
 <!-- HOW TO USE THIS TEMPLATE
      Save it as README.md at the root of your project, next to pom.xml. Replace every comment like this one
@@ -9,7 +9,7 @@
 <!-- One sentence under the title: what the app is, for whom.
      Example: A console app that keeps a store's inventory in a csv file and lets a clerk search it. -->
 
-## Description of the Project
+## Application that helps users track deposits and payments. Transactions are saved to a CSV file so they remain available after restarting the program.
 
 <!-- Three to five sentences. What the application does, who uses it, what problem it solves.
      Write it for someone who has never seen the workbook: a recruiter, a classmate, you in six months. -->
@@ -25,9 +25,9 @@
      - Shows every product in the store
      - Searches products by name (bonus) -->
 
--
--
--
+- Adding Deposits
+- Make Payments
+- View for ledger with many different ways to sort transactions seen
 
 ## User Stories
 
@@ -35,8 +35,13 @@
      As a [type of user], I want [some goal] so that [some reason].
      Same text as the cards on your GitHub project board. -->
 
-- As a ..., I want ..., so that ...
-- As a ..., I want ..., so that ...
+- As a user, I want to record deposits so that I can track incomang money.
+- As a user, I want to record payments so that I can track spending.
+- As a user, I want my transactions saved to the file so that I can access them after restarting .
+- As a user, I want to view all transactions from newest to oldest so for recent activty first.
+- As a user, I want to view deposits and payments separately.
+- As a user, I want to filter transactions for specific periods.
+- As a user, I want to filter transactions by vendor when looking fro particular business or person.
 
 ## Setup
 
@@ -62,8 +67,7 @@
      - `inventory.csv` sits at the project root, next to `pom.xml`. The program reads it at start.
      - `logs.txt` is created by the program at the project root on the first run. -->
 
--
-
+- transactions.csv belongs in the project root, next to pom.xml. Will be read by program at Start.
 ## Technologies Used
 
 - Java 17
@@ -103,8 +107,8 @@
 
 <!-- What you would add or fix next, one bullet each. Unfinished bonuses belong here. -->
 
--
--
+- I would like to add animation
+- I would like to add some sort of color or design
 
 ## Resources
 
@@ -117,10 +121,4 @@
 
 <!-- Your name and, if you like, your GitHub profile link. For a team workshop, one line per person with what each one built. -->
 
-- **Your Name**
-
-## Thanks
-
-<!-- Optional. The people who helped: the instructor, a classmate who debugged with you, a mentor. -->
-
-- Thank you to ... for ...
+- **Isaiah Covington**
