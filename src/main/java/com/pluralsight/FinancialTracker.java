@@ -46,13 +46,12 @@ public class FinancialTracker {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
+        showTitle();
+
         while (running) {
-            System.out.println("Welcome to TransactionApp");
-            System.out.println("Choose an option:");
-            System.out.println("D) Add Deposit");
-            System.out.println("P) Make Payment (Debit)");
-            System.out.println("L) Ledger");
-            System.out.println("X) Exit");
+            System.out.println("  \u001B[32m[D] Add Deposit       \u001B[32m[P] Make Payment");
+            System.out.println("  \u001B[32m[L] View Ledger\u001B[0m        \u001B[31mX) Exit\u001B[0m");
+            System.out.print("\n  What can I do for you today? > ");
 
             String input = scanner.nextLine().trim();
 
@@ -113,16 +112,22 @@ public class FinancialTracker {
     private static void addDeposit(Scanner scanner) {
         System.out.println("What's todays date (yyyy-MM-dd)");
         LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+        showProgress("ADD DEPOSIT", 1);
         System.out.println("What time is it? (HH:mm:ss)");
         LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
+        showProgress("ADD DEPOSIT", 2);
         System.out.println("What is the reason for this transaction?");
         String description = scanner.nextLine();
+        showProgress("ADD DEPOSIT", 3);
         System.out.println("What is your name?");
         String vendor = scanner.nextLine();
+        showProgress("ADD DEPOSIT", 4);
         System.out.println("How much would you like to Deposit");
         double price = scanner.nextDouble();
+        showProgress("ADD DEPOSIT", 5);
         scanner.nextLine();
         System.out.println(price + "$ Has Been Depsited to your account!");
+        showProgress("ADD DEPOSIT", 6);
 
         if (price > 0) {
             Transaction deposit = new Transaction(date, time, description, vendor, price
@@ -153,16 +158,22 @@ public class FinancialTracker {
     private static void addPayment(Scanner scanner) {
         System.out.println("What's todays date (yyyy-MM-dd)");
         LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+        showProgress("ADD PAYMENT", 1);
         System.out.println("What time is it? (HH:mm:ss)");
         LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
+        showProgress("ADD PAYMENT", 2);
         System.out.println("What is the reason for this transaction?");
         String description = scanner.nextLine();
+        showProgress("ADD PAYMENT", 3);
         System.out.println("What is your name?");
         String vendor = scanner.nextLine();
+        showProgress("ADD PAYMENT", 4);
         System.out.println("How much Will you be paying today?");
         double price = scanner.nextDouble();
+        showProgress("ADD PAYMENT", 5);
         scanner.nextLine();
-        System.out.println(price + "Was payed Today!");
+        System.out.println(price + "$ Was payed Today!");
+        showProgress("ADD PAYMENT", 6);
 
         if (price > 0) {
             price = -price;
@@ -365,5 +376,43 @@ public class FinancialTracker {
     private static Double parseDouble(String s) {
         /* TODO – return Double   or null */
         return null;
+    }
+    private static void showTitle() {
+        System.out.print("\u001B[35m");//Color blue
+
+        System.out.println("""
+            
+            #      #####  ####    ####  #####  ####       #      #####  #   #  #   #
+            #      #      #   #  #      #      #   #      #        #    ##  #  #  #
+            #      ####   #   #  #  ##  ####   ####       #        #    # # #  ###
+            #      #      #   #  #   #  #      #  #       #        #    #  ##  #  #
+            #####  #####  ####    ###   #####  #   #      #####  #####  #   #  #   #
+            
+                                  YOUR MONEY, IS OUR PRIORITY.
+            
+            =========================================================================
+            """);
+
+        System.out.print("\u001B[0m");
+    }
+    private static void showProgress(String title, int completedSteps) {
+        // Lists the steps in the order they are completed
+        String[] steps = {"Date", "Time", "Description", "Vendor", "Amount", "Saved"};
+
+        System.out.println("|----------------------------|");
+        System.out.printf("| %-26s |%n", title); //Title is either Addpayment or add deposit
+        //-26 Gives a min width so the box line sup
+
+        for (int i = 0; i < steps.length; i++) {
+            if (i < completedSteps) { // Checks whether this step is completed
+                System.out.print("\u001B[32m"); // Changes completed steps to green
+                System.out.printf("| [X] %-22s |%n", steps[i]);
+                System.out.print("\u001B[0m");
+            } else {
+                System.out.printf("| [ ] %-22s |%n", steps[i]); //Keeps blank since not filled yet
+            }
+        }
+
+        System.out.println("+----------------------------+");
     }
 }

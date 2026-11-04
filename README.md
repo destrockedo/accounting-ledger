@@ -50,6 +50,7 @@
 - Java 17 (Amazon Corretto), the version used in class.
 - IntelliJ IDEA Community Edition: <https://www.jetbrains.com/idea/download/>
 
+
 ### Running the application
 
 1. Clone this repository, or download it as a zip and unzip it.
@@ -100,8 +101,30 @@
      demo day and what you talk about in an interview. -->
 
 ```java
+  private static void showProgress(String title, int completedSteps) {
+        // Lists the steps in the order they are completed
+        String[] steps = {"Date", "Time", "Description", "Vendor", "Amount", "Saved"};
+
+        System.out.println("|----------------------------|");
+        System.out.printf("| %-26s |%n", title); //Title is either Addpayment or add deposit
+        //-26 Gives a min width so the box line sup
+
+        for (int i = 0; i < steps.length; i++) {
+            if (i < completedSteps) { // Checks whether this step is completed
+                System.out.print("\u001B[32m"); // Changes completed steps to green
+                System.out.printf("| [X] %-22s |%n", steps[i]);
+                System.out.print("\u001B[0m"); 
+            } else {
+                System.out.printf("| [ ] %-22s |%n", steps[i]); //Keeps blank since not filled yet
+            }
+        }
+
+        System.out.println("+----------------------------+");
+    }
 
 ```
+- This method is a checkbox when going threw the process of adding a Payment or deposit.
+- It uses the array steps and int completedsteps to go threw 1 at a time and check if an answer had been put in for the question then adds a X/ check next to it and turn the text color green
 
 ## Future Work
 
@@ -115,7 +138,8 @@
 <!-- What helped you: the workbook, the week's hub pages, a tutorial, a documentation page. Real links. -->
 
 - Java YearUp Fall 2026 hub: <https://raymaroun.github.io/yearup-java-fall2026/>
--
+- https://gsapify.com/gsap-animations/
+- https://codefronts.com/components/
 
 ## Author
 
