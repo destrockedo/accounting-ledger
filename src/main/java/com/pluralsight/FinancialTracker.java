@@ -524,6 +524,6 @@ public class FinancialTracker {
                 System.out.printf("| [ ] %-22s |%n", steps[i]); //Keeps blank since not filled yet
             }
         }
-        System.out.println("+----------------------------+.");
+        System.out.println("+----------------------------+");
     }
 }
