@@ -95,22 +95,22 @@ public class FinancialTracker {
      * Store the amount as-is (positive) and append to the file.
      */
     private static void addDeposit(Scanner scanner) {
-        System.out.println("What's todays date (yyyy-MM-dd)");
-        LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
-        showProgress("ADD DEPOSIT", 1);
-        System.out.println("What time is it? (HH:mm:ss)");
-        LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
-        showProgress("ADD DEPOSIT", 2);
-        System.out.println("What is the reason for this transaction?");
-        String description = scanner.nextLine();
-        showProgress("ADD DEPOSIT", 3);
-        System.out.println("What is your name?");
-        String vendor = scanner.nextLine();
-        showProgress("ADD DEPOSIT", 4);
-        System.out.println("How much would you like to Deposit");
-        double price = scanner.nextDouble();
-        showProgress("ADD DEPOSIT", 5);
-        scanner.nextLine();
+          System.out.println("What's todays date (yyyy-MM-dd)");
+          LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+          showProgress("ADD DEPOSIT", 1);
+          System.out.println("What time is it? (HH:mm:ss)");
+          LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
+          showProgress("ADD DEPOSIT", 2);
+          System.out.println("What is the reason for this transaction?");
+          String description = scanner.nextLine();
+          showProgress("ADD DEPOSIT", 3);
+          System.out.println("What is your name?");
+          String vendor = scanner.nextLine();
+          showProgress("ADD DEPOSIT", 4);
+          System.out.println("How much would you like to Deposit");
+          double price = scanner.nextDouble();
+          showProgress("ADD DEPOSIT", 5);
+          scanner.nextLine();
 
 
 
@@ -355,7 +355,48 @@ public class FinancialTracker {
     private static void customSearch(Scanner scanner) {
         // TODO – prompt for any combination of date range, description,
         //        vendor, and exact amount, then display matches
+        boolean running = true;
+        while (running) {
+            System.out.println("Search by:");
+            System.out.println("1) Date Range");
+            System.out.println("2) Description");
+            System.out.println("3) Vendor");
+            System.out.println("4) Exact amount");
+            System.out.println("0) Back");
+
+            String input = scanner.nextLine().trim();
+
+            switch (input.toUpperCase()) {
+                case "1" -> displayLedger();
+                case "2" -> {
+                    System.out.println("Enter payment description");
+                    String description = scanner.nextLine();
+                    filterTransactionsByDescription(description);
+                }
+                case "3" -> displayPayments();
+                case "4" -> reportsMenu(scanner);
+                case "0" -> running = false;
+                default -> System.out.println("Invalid option");
+            }
+        }
     }
+    private static void filterTransactionsByDescription(String description) {
+
+        boolean descriptionFound = false;
+
+        //  for (int i = 0; i < transactions.size(); i++) {
+        for (Transaction transaction : transactions) {
+            //If entered vendor eqauls vendor currently on transactions list sout said vendors
+            if (description.equalsIgnoreCase(transaction.getVendor())) {
+                System.out.println(transaction);
+                descriptionFound = true;
+            }
+        }
+        if (!descriptionFound){
+            System.out.println("No Descriptions by that name.");
+        }
+    }
+
 
     /* ------------------------------------------------------------------
        Utility parsers (you can reuse in many places)
