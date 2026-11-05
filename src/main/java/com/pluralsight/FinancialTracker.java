@@ -4,6 +4,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.InputMismatchException;
@@ -27,7 +28,7 @@ public class FinancialTracker {
 
     /* ------------------------------------------------------------------
        Main menu
-       ------------------------------------------------------------------ */
+       */
     public static void main(String[] args) {
         loadTransactions(FILE_NAME, transactions);
 
@@ -62,6 +63,20 @@ public class FinancialTracker {
      * • If the file doesn’t exist, create an empty one so that future writes succeed.
      */
     public static void loadTransactions(String fileName, ArrayList<Transaction> transactions) {
+       //Creates new file if one doesnt yet exist
+        try {
+            File file = new File(fileName);
+
+            if (file.createNewFile()) {
+                System.out.println("Transaction file created successfully!");
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error creating transaction file: " + e.getMessage());
+            return;
+        }
+
+
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
 
@@ -96,6 +111,8 @@ public class FinancialTracker {
      * Store the amount as-is (positive) and append to the file.
      */
     private static void addDeposit(Scanner scanner) {
+        while (true) {
+            try {
           System.out.println("What's todays date (yyyy-MM-dd)");
           LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
           showProgress("ADD DEPOSIT", 1);
@@ -135,49 +152,74 @@ public class FinancialTracker {
             transactions.add(deposit);
             System.out.println(price + "$ Has Been Depsited to your account!");
             showProgress("ADD DEPOSIT", 6);// Only "Saves" after confirming deposit is a positive amount
-        }
-    }
 
+            break;
+        } else {
+            System.out.println("Payment must be greater than 0");
+        }
+    } catch (DateTimeParseException e) {
+        System.out.println("Incorrect date or time. AGAIN.");
+        return;
+    } catch (InputMismatchException e) {
+        System.out.println("Invalid amount. Enter a number.");
+        scanner.nextLine();
+    }
+}
+    }
 
     private static void addPayment(Scanner scanner) {
-        System.out.println("What's todays date (yyyy-MM-dd)");
-        LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
-        showProgress("ADD PAYMENT", 1);
-        System.out.println("What time is it? (HH:mm:ss)");
-        LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
-        showProgress("ADD PAYMENT", 2);
-        System.out.println("What is the reason for this transaction?");
-        String description = scanner.nextLine();
-        showProgress("ADD PAYMENT", 3);
-        System.out.println("What is your name?");
-        String vendor = scanner.nextLine();
-        showProgress("ADD PAYMENT", 4);
-        System.out.println("How much Will you be paying today?");
-        double price = scanner.nextDouble();
-        showProgress("ADD PAYMENT", 5);
-        scanner.nextLine();
+        while (true) {
+            try {
+
+                System.out.println("What's todays date (yyyy-MM-dd)");
+                LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+                showProgress("ADD PAYMENT", 1);
+                System.out.println("What time is it? (HH:mm:ss)");
+                LocalTime time = LocalTime.parse(scanner.nextLine(), TIME_FMT);
+                showProgress("ADD PAYMENT", 2);
+                System.out.println("What is the reason for this transaction?");
+                String description = scanner.nextLine();
+                showProgress("ADD PAYMENT", 3);
+                System.out.println("What is your name?");
+                String vendor = scanner.nextLine();
+                showProgress("ADD PAYMENT", 4);
+                System.out.println("How much Will you be paying today?");
+                double price = scanner.nextDouble();
+                showProgress("ADD PAYMENT", 5);
+                scanner.nextLine();
 
 
-        if (price > 0) {
-            price = -price;
-            Transaction payment = new Transaction(date, time, description, vendor, price
-            );
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-                writer.newLine();
-                writer.write(payment.toString());
-                writer.newLine();
+                if (price > 0) {
+                    price = -price;
+                    Transaction payment = new Transaction(date, time, description, vendor, price
+                    );
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+                        writer.newLine();
+                        writer.write(payment.toString());
+                        writer.newLine();
 
-            } catch (IOException e) {
-                System.out.println("Error saving Payment: " + e.getMessage());
+                    } catch (IOException e) {
+                        System.out.println("Error saving Payment: " + e.getMessage());
+                        return;
+                    }
+
+                    transactions.add(payment);
+                    System.out.println(price + "$ Was payed Today!");
+                    showProgress("ADD PAYMENT", 6);
+
+                    break;
+                } else {
+                    System.out.println("Payment must be greater than 0");
+                }
+            } catch (DateTimeParseException e) {
+                System.out.println("Incorrect date or time. AGAIN.");
                 return;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid amount. Enter a number.");
+                scanner.nextLine();
             }
-
-            transactions.add(payment);
-            System.out.println(price + "$ Was payed Today!");
-            showProgress("ADD PAYMENT", 6);
         }
     }
-
     /* ------------------------------------------------------------------
        Ledger menu
        ------------------------------------------------------------------ */
@@ -248,8 +290,6 @@ public class FinancialTracker {
         }
             }
 
-
-
     /* ------------------------------------------------------------------
        Reports menu
        ------------------------------------------------------------------ */
@@ -314,7 +354,6 @@ public class FinancialTracker {
             }
         }
     }
-
     /* ------------------------------------------------------------------
        Reporting helpers
        ------------------------------------------------------------------ */
@@ -354,8 +393,7 @@ public class FinancialTracker {
 
 
     private static void customSearch(Scanner scanner) {
-        // TODO – prompt for any combination of date range, description,
-        //        vendor, and exact amount, then display matches
+
         boolean running = true;
         while (running) {
             System.out.println("Search by:");
@@ -370,11 +408,10 @@ public class FinancialTracker {
             switch (input.toUpperCase()) {
                 case "1" -> {
                     System.out.println("Enter start date: (yyyy-MM-dd)");
-                    //LocalDate start = LocalDate.parse(scanner.nextLine(), DATE_FMT);
-                    LocalDate start = readDate(scanner);
+                    LocalDate start = LocalDate.parse(scanner.nextLine(), DATE_FMT);
                     System.out.println("Enter end date:  (yyyy-MM-dd)");
-                    //LocalDate end = LocalDate.parse(scanner.nextLine(), DATE_FMT);
-                    LocalDate end = readDate(scanner);
+                    LocalDate end = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+
 
                     if (start.isAfter(end)) {
                         System.out.println("Start date cannot be after end date.");
@@ -397,6 +434,7 @@ public class FinancialTracker {
                         System.out.println("Enter Exact Amount: ");
                         double amount = scanner.nextDouble();
                         filterTransactionsByAmount(amount);
+                        break;
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid amount. Please enter a number.");
                     }
@@ -404,6 +442,7 @@ public class FinancialTracker {
                 }
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
+
             }
         }
     }
@@ -485,7 +524,6 @@ public class FinancialTracker {
                 System.out.printf("| [ ] %-22s |%n", steps[i]); //Keeps blank since not filled yet
             }
         }
-
         System.out.println("+----------------------------+");
     }
 }
