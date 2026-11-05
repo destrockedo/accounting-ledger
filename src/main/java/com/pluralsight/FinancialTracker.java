@@ -201,6 +201,15 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
+
+        transactions.sort(
+                //Compares the Transactions by Date
+                Comparator.comparing(Transaction::getDate)
+                        //Compares time only when 2 Dates are the same or if the first static method being compare is the same
+                        .thenComparing(Transaction::getTime)
+                        //makes list newest to oldest or "reverses" it
+                        .reversed()
+        );
         while (running) {
             System.out.println("Ledger");
             System.out.println("Choose an option:");
@@ -227,26 +236,14 @@ public class FinancialTracker {
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
     private static void displayLedger() {
-        //rearranges list
-        transactions.sort(
-                //Compares the Transactions by Date
-                Comparator.comparing(Transaction::getDate)
-                        //Compares time only when 2 Dates are the same or if the first static method being compare is the same
-                        .thenComparing(Transaction::getTime)
-                        //makes list newest to oldest or "reverses" it
-                        .reversed()
-        );
+
         for (int i = 0; i < transactions.size(); i++) {
             System.out.println(transactions.get(i));
         }
     }
 
     private static void displayDeposits() {
-        transactions.sort(
-                Comparator.comparing(Transaction::getDate)
-                        .thenComparing(Transaction::getTime)
-                        .reversed()
-        );
+
         for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getAmount() > 0) {
                 System.out.println(transactions.get(i));
@@ -255,11 +252,7 @@ public class FinancialTracker {
     }
 
     private static void displayPayments() {
-        transactions.sort(
-                Comparator.comparing(Transaction::getDate)
-                        .thenComparing(Transaction::getTime)
-                        .reversed()
-        );
+
         for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getAmount() < 0) {
                 System.out.println(transactions.get(i));
@@ -284,6 +277,13 @@ public class FinancialTracker {
             System.out.println("0) Back");
 
             String input = scanner.nextLine().trim();
+
+            transactions.sort(
+                    //Sort by date and time
+                    Comparator.comparing(Transaction::getDate)
+                            .thenComparing(Transaction::getTime)
+                            .reversed()
+            );
 
             switch (input) {
                 case "1" -> {
@@ -329,12 +329,7 @@ public class FinancialTracker {
        Reporting helpers
        ------------------------------------------------------------------ */
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
-        transactions.sort(
-                //Sort by date and time
-                Comparator.comparing(Transaction::getDate)
-                        .thenComparing(Transaction::getTime)
-                        .reversed()
-        );
+
         //Grabs each transaction individaully by date
         for (int i = 0; i < transactions.size(); i++) {
             LocalDate transactionDate = transactions.get(i).getDate();
@@ -348,12 +343,7 @@ public class FinancialTracker {
 
 
     private static void filterTransactionsByVendor(String vendor) {
-        transactions.sort(
-                //Sort by date and time
-                Comparator.comparing(Transaction::getDate)
-                        .thenComparing(Transaction::getTime)
-                        .reversed()
-        );
+
         boolean vendorFound = false;
 
         for (int i = 0; i < transactions.size(); i++) {
@@ -387,7 +377,7 @@ public class FinancialTracker {
         return null;
     }
     private static void showTitle() {
-        System.out.print("\u001B[35m");//Color blue
+        System.out.print("\u001B[36m");//Color blue
 
         System.out.println("""
             
