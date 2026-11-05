@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class FinancialTracker {
@@ -367,14 +368,40 @@ public class FinancialTracker {
             String input = scanner.nextLine().trim();
 
             switch (input.toUpperCase()) {
-                case "1" -> displayLedger();
+                case "1" -> {
+                    System.out.println("Enter start date: (yyyy-MM-dd)");
+                    //LocalDate start = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+                    LocalDate start = readDate(scanner);
+                    System.out.println("Enter end date:  (yyyy-MM-dd)");
+                    //LocalDate end = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+                    LocalDate end = readDate(scanner);
+
+                    if (start.isAfter(end)) {
+                        System.out.println("Start date cannot be after end date.");
+                    } else {
+                        filterTransactionsByDate(start, end);
+                    }
+                }
                 case "2" -> {
                     System.out.println("Enter payment description");
                     String description = scanner.nextLine();
                     filterTransactionsByDescription(description);
                 }
-                case "3" -> displayPayments();
-                case "4" -> reportsMenu(scanner);
+                case "3" -> {
+                    System.out.println("Name of Vendor: ");
+                    String vendor = scanner.nextLine();
+                    filterTransactionsByVendor(vendor);
+                }
+                case "4" -> {
+                    try {
+                        System.out.println("Enter Exact Amount: ");
+                        double amount = scanner.nextDouble();
+                        filterTransactionsByAmount(amount);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Invalid amount. Please enter a number.");
+                    }
+                    scanner.nextLine();
+                }
                 case "0" -> running = false;
                 default -> System.out.println("Invalid option");
             }
@@ -384,16 +411,29 @@ public class FinancialTracker {
 
         boolean descriptionFound = false;
 
-        //  for (int i = 0; i < transactions.size(); i++) {
         for (Transaction transaction : transactions) {
-            //If entered vendor eqauls vendor currently on transactions list sout said vendors
-            if (description.equalsIgnoreCase(transaction.getVendor())) {
+            //if (description.equalsIgnoreCase(transaction.getDescription()))
+                if (transaction.getDescription().toLowerCase().contains(description.toLowerCase())) {
                 System.out.println(transaction);
                 descriptionFound = true;
             }
         }
         if (!descriptionFound){
             System.out.println("No Descriptions by that name.");
+        }
+    }
+    private static void filterTransactionsByAmount(double amount) {
+
+        boolean amountFound = false;
+
+        for (Transaction transaction : transactions) {
+            if (amount == transaction.getAmount()) {
+                System.out.println(transaction);
+                amountFound = true;
+            }
+        }
+        if (!amountFound){
+            System.out.println("No transactions contain that amount.");
         }
     }
 
