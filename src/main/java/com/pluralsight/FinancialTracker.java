@@ -7,20 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
-//Test
-/*
- * Capstone skeleton – personal finance tracker.
- * ------------------------------------------------
- * File format  (pipe-delimited)
- *     yyyy-MM-dd|HH:mm:ss|description|vendor|amount
- * A deposit has a positive amount; a payment is stored
- * as a negative amount.
- *
- * TODO: create the Transaction class in this package first.
- *       One object = one line of the file. Decide its fields from
- *       the file format above, add a constructor and getters.
- *       This class does not compile until Transaction exists.
- */
+
 public class FinancialTracker {
 
     /* ------------------------------------------------------------------
@@ -71,9 +58,7 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
 
     /**
-     * Load transactions from FILE_NAME.
      * • If the file doesn’t exist, create an empty one so that future writes succeed.
-     * • Each line looks like: date|time|description|vendor|amount
      */
     public static void loadTransactions(String fileName, ArrayList<Transaction> transactions) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
@@ -152,11 +137,7 @@ public class FinancialTracker {
         }
     }
 
-    /**
-     * Same prompts as addDeposit.
-     * Amount must be entered as a positive number,
-     * then converted to a negative amount before storing.
-     */
+
     private static void addPayment(Scanner scanner) {
         System.out.println("What's todays date (yyyy-MM-dd)");
         LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
@@ -236,29 +217,37 @@ public class FinancialTracker {
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
     private static void displayLedger() {
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
 
-        for (int i = 0; i < transactions.size(); i++) {
-            System.out.println(transactions.get(i));
         }
     }
 
     private static void displayDeposits() {
 
-        for (int i = 0; i < transactions.size(); i++) {
+        /*for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getAmount() > 0) {
-                System.out.println(transactions.get(i));
+                System.out.println(transactions.get(i));*/
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() > 0) {
+                System.out.println(transaction);
             }
         }
     }
 
     private static void displayPayments() {
 
-        for (int i = 0; i < transactions.size(); i++) {
+        /*for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getAmount() < 0) {
-                System.out.println(transactions.get(i));
+                System.out.println(transactions.get(i));*/
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() < 0) {
+                System.out.println(transaction);
             }
         }
-    }
+            }
+
+
 
     /* ------------------------------------------------------------------
        Reports menu
@@ -331,12 +320,14 @@ public class FinancialTracker {
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
 
         //Grabs each transaction individaully by date
-        for (int i = 0; i < transactions.size(); i++) {
-            LocalDate transactionDate = transactions.get(i).getDate();
+        /*for (int i = 0; i < transactions.size(); i++) {
+            LocalDate transactionDate = transactions.get(i).getDate();*/
+        for (Transaction transaction : transactions) {
+            LocalDate transactionDate = (transaction.getDate());
 
             //If transactions date is not before whatever "start" =, and is not after whatever "end" = will print everything inbetween
             if (!transactionDate.isBefore(start) && !transactionDate.isAfter(end)) {
-                System.out.println(transactions.get(i));
+                System.out.println(transaction);
             }
         }
     }
@@ -346,18 +337,20 @@ public class FinancialTracker {
 
         boolean vendorFound = false;
 
-        for (int i = 0; i < transactions.size(); i++) {
+      //  for (int i = 0; i < transactions.size(); i++) {
+        for (Transaction transaction : transactions) {
             //If entered vendor eqauls vendor currently on transactions list sout said vendors
-            if (vendor.equalsIgnoreCase(transactions.get(i).getVendor())) {
-                System.out.println(transactions.get(i));
+            if (vendor.equalsIgnoreCase(transaction.getVendor())) {
+                System.out.println(transaction);
                 vendorFound = true;
             }
+        }
             if (!vendorFound){
                 System.out.println("No Vendors by that name.");
             }
         }
 
-    }
+
 
     private static void customSearch(Scanner scanner) {
         // TODO – prompt for any combination of date range, description,
