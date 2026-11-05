@@ -27,7 +27,7 @@ public class FinancialTracker {
 
     /* ------------------------------------------------------------------
        Main menu
-       ------------------------------------------------------------------ */
+       */
     public static void main(String[] args) {
         loadTransactions(FILE_NAME, transactions);
 
@@ -62,6 +62,20 @@ public class FinancialTracker {
      * • If the file doesn’t exist, create an empty one so that future writes succeed.
      */
     public static void loadTransactions(String fileName, ArrayList<Transaction> transactions) {
+       //Creates new file if one doesnt yet exist
+        try {
+            File file = new File(fileName);
+
+            if (file.createNewFile()) {
+                System.out.println("Transaction file created successfully!");
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error creating transaction file: " + e.getMessage());
+            return;
+        }
+
+
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
 
@@ -354,8 +368,7 @@ public class FinancialTracker {
 
 
     private static void customSearch(Scanner scanner) {
-        // TODO – prompt for any combination of date range, description,
-        //        vendor, and exact amount, then display matches
+
         boolean running = true;
         while (running) {
             System.out.println("Search by:");
@@ -370,11 +383,10 @@ public class FinancialTracker {
             switch (input.toUpperCase()) {
                 case "1" -> {
                     System.out.println("Enter start date: (yyyy-MM-dd)");
-                    //LocalDate start = LocalDate.parse(scanner.nextLine(), DATE_FMT);
-                    LocalDate start = readDate(scanner);
+                    LocalDate start = LocalDate.parse(scanner.nextLine(), DATE_FMT);
                     System.out.println("Enter end date:  (yyyy-MM-dd)");
-                    //LocalDate end = LocalDate.parse(scanner.nextLine(), DATE_FMT);
-                    LocalDate end = readDate(scanner);
+                    LocalDate end = LocalDate.parse(scanner.nextLine(), DATE_FMT);
+
 
                     if (start.isAfter(end)) {
                         System.out.println("Start date cannot be after end date.");
@@ -485,7 +497,6 @@ public class FinancialTracker {
                 System.out.printf("| [ ] %-22s |%n", steps[i]); //Keeps blank since not filled yet
             }
         }
-
         System.out.println("+----------------------------+");
     }
 }
