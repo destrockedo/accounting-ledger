@@ -71,7 +71,7 @@ public class FinancialTracker {
 
         } catch (IOException e) {
             System.out.println("Error creating transaction file: " + e.getMessage());
-            return;
+
         }
 
         //Reads csv File line by line till empty, and breaks each part into there respected data types
@@ -149,7 +149,7 @@ public class FinancialTracker {
         }
     } catch (DateTimeParseException e) {
         System.out.println("Incorrect date or time. AGAIN.");
-        return;
+
     } catch (InputMismatchException e) {
         System.out.println("Invalid amount. Enter a number.");
         scanner.nextLine();
@@ -490,16 +490,16 @@ public class FinancialTracker {
         System.out.print("\u001B[0m");
     }
     private static void showProgress(String title, int completedSteps) {
-        // Lists the steps in the order they are completed
+        // Order Steps completed in
         String[] steps = {"Date", "Time", "Description", "Vendor", "Amount", "Saved"};
 
         System.out.println("|----------------------------|");
-        System.out.printf("| %-26s |%n", title); //Title is either Addpayment or add deposit
-        //-26 Gives a min width so the box is always same length
+        System.out.printf("| %-26s |%n", title);
+        //-26s Gives a min width so the box is always same length
 
         for (int i = 0; i < steps.length; i++) {
-            if (i < completedSteps) { // Checks whether this step is completed
-                System.out.print("\u001B[32m"); // Changes completed steps to green
+            if (i < completedSteps) { // Whatever number is when method called will stop there and only mark those as completed
+                System.out.print("\u001B[32m");
                 System.out.printf("| [X] %-22s |%n", steps[i]);
                 System.out.print("\u001B[0m");
             } else {

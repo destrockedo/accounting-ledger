@@ -9,7 +9,7 @@
 <!-- One sentence under the title: what the app is, for whom.
      Example: A console app that keeps a store's inventory in a csv file and lets a clerk search it. -->
 
-## Application that helps users track deposits and payments. Transactions are saved to a CSV file so they remain available after restarting the program.
+##  Application that helps users track their financial transactions. Users can record deposits and payments, view their transaction history, and search for specific transactions. The application stores transactions in a CSV file so that information remains available after the program closes.
 
 <!-- Three to five sentences. What the application does, who uses it, what problem it solves.
      Write it for someone who has never seen the workbook: a recruiter, a classmate, you in six months. -->
@@ -25,9 +25,11 @@
      - Shows every product in the store
      - Searches products by name (bonus) -->
 
-- Adding Deposits
-- Make Payments
-- View for ledger with many different ways to sort transactions seen
+- Add deposits/payments and save them to a CSV file.
+- View all transactions from newest to oldest.
+-  Search by date range, description, vendor, or exact amount.
+- View deposits and payments separately.
+- Display a progress checklist when entering deposits or payments.
 
 ## User Stories
 
@@ -56,8 +58,8 @@
 1. Clone this repository, or download it as a zip and unzip it.
 2. In IntelliJ: File > Open, pick the project folder (the one that holds `pom.xml`), press Open.
 3. Wait for IntelliJ to finish indexing (progress bar at the bottom).
-4. Open `src/main/java/com/pluralsight/YourMainClassName.java`. <!-- replace YourMainClassName with the class that has main -->
-5. Right-click inside the file and choose Run 'YourMainClassName.main()'.
+4. Open `src/main/java/com/pluralsight/FinancialTracker.java`.
+5. Right-click inside the file and choose **Run 'FinancialTracker.main()'**.
 
 ### Data and configuration
 
@@ -92,7 +94,7 @@
 
 ![Main menu](images/menu.png)
 
-![One feature in action](images/feature.png)
+![One feature in action](images/checklist.png)
 
 ## A piece of code I am proud of
 
@@ -102,40 +104,41 @@
 
 ```java
   private static void showProgress(String title, int completedSteps) {
-        // Lists the steps in the order they are completed
-        String[] steps = {"Date", "Time", "Description", "Vendor", "Amount", "Saved"};
+    // Order Steps completed in
+    String[] steps = {"Date", "Time", "Description", "Vendor", "Amount", "Saved"};
 
-        System.out.println("|----------------------------|");
-        System.out.printf("| %-26s |%n", title); //Title is either Addpayment or add deposit
-        //-26 Gives a min width so the box line sup
+    System.out.println("|----------------------------|");
+    System.out.printf("| %-26s |%n", title);
+    //-26s Gives a min width so the box is always same length
 
-        for (int i = 0; i < steps.length; i++) {
-            if (i < completedSteps) { // Checks whether this step is completed
-                System.out.print("\u001B[32m"); // Changes completed steps to green
-                System.out.printf("| [X] %-22s |%n", steps[i]);
-                System.out.print("\u001B[0m"); 
-            } else {
-                System.out.printf("| [ ] %-22s |%n", steps[i]); //Keeps blank since not filled yet
-            }
+    for (int i = 0; i < steps.length; i++) {
+        if (i < completedSteps) { // Whatever number is when method called will stop there and only mark those as completed
+            System.out.print("\u001B[32m");
+            System.out.printf("| [X] %-22s |%n", steps[i]);
+            System.out.print("\u001B[0m");
+        } else {
+            System.out.printf("| [ ] %-22s |%n", steps[i]); //Keeps blank since not filled yet
         }
-
-        System.out.println("+----------------------------+");
     }
+    System.out.println("+----------------------------+");
+}
+}
 
 ```
-- This method is a checkbox when going threw the process of adding a Payment or deposit.
-- It uses the array steps and int completedsteps to go threw 1 at a time and check if an answer had been put in for the question then adds a X/ check next to it and turn the text color green
+- I choose this method because i wanted to make adding deposits and payment more interactive. It uses a String array contain steps of a transactions, and a for lop to go threw each interaction and display it green if it complete.
 
 ## Future Work
 
-<!-- What you would add or fix next, one bullet each. Unfinished bonuses belong here. -->
+
 
 - I would like to add animation
-- I would like to add some sort of color or design
+- Improve the visual design of the console interface.
+- Allow users to combine multiple search filters in a single custom search.
+- Add Transaction summary
 
 ## Resources
 
-<!-- What helped you: the workbook, the week's hub pages, a tutorial, a documentation page. Real links. -->
+
 
 - Java YearUp Fall 2026 hub: <https://raymaroun.github.io/yearup-java-fall2026/>
 - https://gsapify.com/gsap-animations/
