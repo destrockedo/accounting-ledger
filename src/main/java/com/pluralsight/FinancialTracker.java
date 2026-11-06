@@ -59,11 +59,9 @@ public class FinancialTracker {
        File I/O
        ------------------------------------------------------------------ */
 
-    /**
-     * • If the file doesn’t exist, create an empty one so that future writes succeed.
-     */
+    //Creates new file if one doesn't yet exist
     public static void loadTransactions(String fileName, ArrayList<Transaction> transactions) {
-       //Creates new file if one doesnt yet exist
+
         try {
             File file = new File(fileName);
 
@@ -76,7 +74,8 @@ public class FinancialTracker {
             return;
         }
 
-
+        //Reads csv File line by line till empty, and breaks each part into there respected data types
+        //Calls contructor Transactions and creats object with all 5 values and puts into arraylist
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
 
@@ -103,13 +102,7 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Add new transactions
        ------------------------------------------------------------------ */
-
-    /**
-     * Prompt for ONE date+time string in the format
-     * "yyyy-MM-dd HH:mm:ss", plus description, vendor, amount.
-     * Validate that the amount entered is positive.
-     * Store the amount as-is (positive) and append to the file.
-     */
+    //Prompts user for information
     private static void addDeposit(Scanner scanner) {
         while (true) {
             try {
@@ -130,30 +123,27 @@ public class FinancialTracker {
           showProgress("ADD DEPOSIT", 5);
           scanner.nextLine();
 
-
+          //Creates a New object whilst also appending it to the csv file
 
         if (price > 0) {
             Transaction deposit = new Transaction(date, time, description, vendor, price
             );
-            // Makes it so when adding to transaction file it actaully appends it
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+
                 writer.newLine();
-
                 writer.write(deposit.toString());
-
-                //like scan.nextline but for the transaction file to start on new line when adding something
                 writer.newLine();
 
             } catch (IOException e) {
                 System.out.println("Error saving deposit: " + e.getMessage());
-                return;
             }
 
+            //Adds New object to Arraylist
             transactions.add(deposit);
             System.out.println(price + "$ Has Been Depsited to your account!");
-            showProgress("ADD DEPOSIT", 6);// Only "Saves" after confirming deposit is a positive amount
+            showProgress("ADD DEPOSIT", 6);
 
-            break;
+            break; // exits while loup
         } else {
             System.out.println("Payment must be greater than 0");
         }
@@ -166,11 +156,10 @@ public class FinancialTracker {
     }
 }
     }
-
+    //Promts for user information
     private static void addPayment(Scanner scanner) {
         while (true) {
             try {
-
                 System.out.println("What's todays date (yyyy-MM-dd)");
                 LocalDate date = LocalDate.parse(scanner.nextLine(), DATE_FMT);
                 showProgress("ADD PAYMENT", 1);
@@ -188,6 +177,8 @@ public class FinancialTracker {
                 showProgress("ADD PAYMENT", 5);
                 scanner.nextLine();
 
+                //Creates a New object whilst also appending it to the csv file
+                //Turn positve price enterted to Negative
 
                 if (price > 0) {
                     price = -price;
@@ -203,6 +194,7 @@ public class FinancialTracker {
                         return;
                     }
 
+                    //Adds New object to Arraylist
                     transactions.add(payment);
                     System.out.println(price + "$ Was payed Today!");
                     showProgress("ADD PAYMENT", 6);
@@ -225,13 +217,11 @@ public class FinancialTracker {
        ------------------------------------------------------------------ */
     private static void ledgerMenu(Scanner scanner) {
         boolean running = true;
-
+        //Compares the Transactions by Date then Time if nescarry, then reverses list
         transactions.sort(
-                //Compares the Transactions by Date
+
                 Comparator.comparing(Transaction::getDate)
-                        //Compares time only when 2 Dates are the same or if the first static method being compare is the same
                         .thenComparing(Transaction::getTime)
-                        //makes list newest to oldest or "reverses" it
                         .reversed()
         );
         while (running) {
@@ -259,7 +249,9 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Display helpers: show data in neat columns
        ------------------------------------------------------------------ */
+    //Displays Full transactions List
     private static void displayLedger() {
+        //Takes Transaction class so it spefices the type/ object
         for (Transaction transaction : transactions) {
             System.out.println(transaction);
 
@@ -271,9 +263,9 @@ public class FinancialTracker {
         /*for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getAmount() > 0) {
                 System.out.println(transactions.get(i));*/
-        for (Transaction transaction : transactions) {
-            if (transaction.getAmount() > 0) {
-                System.out.println(transaction);
+        for (Transaction deposit : transactions) {
+            if (deposit.getAmount() > 0) {
+                System.out.println(deposit);
             }
         }
     }
@@ -308,8 +300,8 @@ public class FinancialTracker {
 
             String input = scanner.nextLine().trim();
 
+            //Sort by date and time
             transactions.sort(
-                    //Sort by date and time
                     Comparator.comparing(Transaction::getDate)
                             .thenComparing(Transaction::getTime)
                             .reversed()
@@ -357,6 +349,7 @@ public class FinancialTracker {
     /* ------------------------------------------------------------------
        Reporting helpers
        ------------------------------------------------------------------ */
+    //Grabs paramenters for start and end date selected and prints everyting inbetween those 2 dates
     private static void filterTransactionsByDate(LocalDate start, LocalDate end) {
 
         //Grabs each transaction individaully by date
@@ -365,21 +358,19 @@ public class FinancialTracker {
         for (Transaction transaction : transactions) {
             LocalDate transactionDate = (transaction.getDate());
 
-            //If transactions date is not before whatever "start" =, and is not after whatever "end" = will print everything inbetween
             if (!transactionDate.isBefore(start) && !transactionDate.isAfter(end)) {
                 System.out.println(transaction);
             }
         }
     }
 
-
+    //Compares Entered vendor to vendors on transactions list
     private static void filterTransactionsByVendor(String vendor) {
 
         boolean vendorFound = false;
 
       //  for (int i = 0; i < transactions.size(); i++) {
         for (Transaction transaction : transactions) {
-            //If entered vendor eqauls vendor currently on transactions list sout said vendors
             if (vendor.equalsIgnoreCase(transaction.getVendor())) {
                 System.out.println(transaction);
                 vendorFound = true;
@@ -446,12 +437,15 @@ public class FinancialTracker {
             }
         }
     }
+
+    //Compares Entered desription to descriptions on transactions list
     private static void filterTransactionsByDescription(String description) {
 
         boolean descriptionFound = false;
 
         for (Transaction transaction : transactions) {
             //if (description.equalsIgnoreCase(transaction.getDescription()))
+            //Allows transaction to display andthing that contains what was entered by the user
                 if (transaction.getDescription().toLowerCase().contains(description.toLowerCase())) {
                 System.out.println(transaction);
                 descriptionFound = true;
@@ -461,6 +455,7 @@ public class FinancialTracker {
             System.out.println("No Descriptions by that name.");
         }
     }
+    //Compares entered amount to amount on transaction list
     private static void filterTransactionsByAmount(double amount) {
 
         boolean amountFound = false;
@@ -476,19 +471,6 @@ public class FinancialTracker {
         }
     }
 
-
-    /* ------------------------------------------------------------------
-       Utility parsers (you can reuse in many places)
-       ------------------------------------------------------------------ */
-    private static LocalDate parseDate(String s) {
-        /* TODO – return LocalDate or null */
-        return null;
-    }
-
-    private static Double parseDouble(String s) {
-        /* TODO – return Double   or null */
-        return null;
-    }
     private static void showTitle() {
         System.out.print("\u001B[36m");//Color blue
 
